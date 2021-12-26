@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Docker | likasi | 博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://https://wxf777.github.io//favicon.ico?v=1640530535991">
+<link rel="stylesheet" href="https://https://wxf777.github.io//styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="Docker学习笔记
+
+官网：https://www.docker.com
+
+安装
+Windows 直接下载docker desktop，开启Hyper-V
+Linux 直接安装速度相对慢，推荐使用脚本快速安装
+curl -fsSL get..." />
+    <meta name="keywords" content="docker" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://https://wxf777.github.io/">
+        <img src="https://https://wxf777.github.io//images/avatar.png?v=1640530535991" class="site-logo">
+        <h1 class="site-title">likasi | 博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      鲜衣怒马少年时
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://https://wxf777.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Docker</h2>
+            <div class="post-date">2021-12-26</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="docker学习笔记">Docker学习笔记</h1>
+<blockquote>
+<p>官网：https://www.docker.com</p>
+</blockquote>
+<h2 id="安装">安装</h2>
+<p>Windows 直接下载docker desktop，开启<code>Hyper-V</code></p>
+<p>Linux 直接安装速度相对慢，推荐使用脚本快速安装</p>
+<pre><code class="language-markdown">curl -fsSL get.docker.com -o get-docker.sh `获取脚本文件`
+sudo sh get-docker.sh --mirror Aliyun      `使用此脚本文件安装`
+</code></pre>
+<pre><code class="language-markdown"># docker官方建议设置开机启动docker
+sudo systemctl enable docker
+
+# 创建docker用户组
+groupadd docker
+
+# 将当前用户加入docker组
+usermod -aG docker $USER
+</code></pre>
+<h2 id="配置镜像加速">配置镜像加速</h2>
+<p>使用：使用阿里云的加速服务，登录阿里云进入控制台搜索镜像服务，点击镜像加速，然后选择对应的操作系统，按照指令进行即可</p>
+<pre><code class="language-markdown">vi /etc/docker/daemon.json
+加入以下内容：
+{
+  &quot;registry-mirrors&quot;: [&quot;http://hub-mirror.c.163.com&quot;, &quot;https://docker.mirrors.ustc.edu.cn&quot;]
+}
+</code></pre>
+<h2 id="镜像-image">镜像 image</h2>
+<p>定义：一个镜像代表着一个软件，例如MySQL镜像、Redis镜像等等</p>
+<p>特点：只读</p>
+<h2 id="容器-container">容器 container</h2>
+<p>定义：基于某个镜像运行一次生产一个程序实列称之为容器</p>
+<p>特点：可读可写</p>
+<h2 id="仓库-repository">仓库 repository</h2>
+<p>定义：用来存储<code>docker</code>中的所有镜像</p>
+<p>网址：https://hub.docker.com</p>
+<p>远程仓库：<code>docker</code>在全世界范围内维护的一个唯一的远程仓库</p>
+<p>本地仓库：自己当前的机器中下载的镜像存储的位置</p>
+<h2 id="第一个应用">第一个应用</h2>
+<pre><code class="language-markdown"># 没有这个镜像会去镜像仓库下载，默认安装好的时候是没有的
+# 出现下面所示说明运行成功
+docker run hello-world
+</code></pre>
+<pre><code class="language-markdown">[root@localhost ~]# docker run hello-world
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the &quot;hello-world&quot; image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+</code></pre>
+<h2 id="docker引擎以及相关命令">docker引擎以及相关命令</h2>
+<pre><code class="language-markdown">docker info                         `用来展示相关信息`
+docker version                      `展示docker客户端、服务端相关版本信息`
+docker --help 或者直接 docker        `查看docker所有帮助命令`
+</code></pre>
+<h2 id="镜像相关命令">镜像相关命令</h2>
+<pre><code class="language-markdown"># 查看本地仓库中存在哪些镜像  镜像ID唯一
+docker images
+
+[root@localhost ~]# docker images
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+hello-world   latest    feb5d9fea6a5   2 months ago   13.3kB
+
+
+# 下载docker镜像 如果没有加版本默认为最新版本
+1.docker pull 镜像名称:版本
+2.docker pull 镜像名称@DIGEST
+
+
+# 不通过docker hub，直接命令行搜索镜像
+docker search 镜像名称:版本
+
+
+# 删除镜像
+1.docker image rm 镜像名称:tag
+2.docker image rm 镜像ID
+3.docker rmi 镜像ID
+4.docker image rm 镜像ID -f       `强制删除`
+
+
+# 列出某个镜像的所有
+docker images 镜像名称
+
+# 查询镜像
+docker images -q                 `只显示镜像ID`
+docker images -a                 `列出所有镜像`
+
+# 组合起来使用删除所有镜像
+docker rmi -f $(docker images -q)  
+</code></pre>
+<h2 id="容器相关命令">容器相关命令</h2>
+<pre><code class="language-markdown"># 通过镜像运行一个容器
+docker run 镜像名称:TAG
+
+# 将打包的tar镜像文件导入到本地docker仓库
+docker load -i tar镜像名称
+
+# 查看当前运行的docker容器
+docker ps
+
+# 查看所有容器
+docker ps -a   包括运行和非运行的
+docker ps -q   返回的是ID
+docker ps -aq  所有ID
+
+# 宿主机端口与容器中的端口进行映射  -p（可以书写多个）
+docker run -p 8787(宿主机端口):8080(容器内服务监听的端口) 镜像名称:TAG
+
+# 映射宿主机端口并且后台启动   -d
+docker run -p -d 8787(宿主机端口):8080(容器内服务监听的端口) 镜像名称:TAG
+
+# 指定名称  --name
+docker run --name 容器名称  镜像名称:TAG
+
+# 综上，例如运行tomcat
+docker run -p 8989:8080 -d --name tomcat_01 tomcat:8.0-jre8
+
+# 容器停止、启动、重启命令
+docker start 容器名称或者容器ID       `开启`
+docker restart 容器名称或者容器ID     `重启`
+docker stop 容器名称或者容器ID        `正常关闭`
+docker kill 容器名称或者容器ID        `立即关闭`
+docker stop $(docker ps -aq)       `关闭所有正在运行的r`
+
+# 删除容器
+docker rm 容器名称|容器ID            `删除停止的容器`
+docker rm -f 容器名称|容器ID         `删除正在运行的容器`
+docker rm -f $(docker ps -aq)      `删除所有容器`
+
+# 产看容器内服务运行日志
+docker logs 容器名称|容器ID 
+docker logs -f 容器名称|容器ID       `实时展示日志`
+docker logs -tf 容器名称|容器ID      `加入时间戳展示日志`
+docker logs --tail n 容器名称|容器ID `展示日志的最后n行`
+
+# 查看容器内进程
+docker top 容器名称|容器ID 
+
+# 与容器内部进行交互
+docker exec -it 容器名称|容器ID bash  `进入容器内软件的命令行`，使用exit退出
+
+# 宿主机与容器的文件传输
+docker cp 容器名称|容器ID:容器的资源路径 宿主机中的路径    `容器中的文件复制到宿主机`
+docker cp 宿主机中的文件路径 容器名称|容器ID:/容器中目录   `宿主机中的文件复制到容器中`
+# 注意 
+windows下使用cp命令需要把宿主机的路径用双引号括起来
+docker cp  4efe40e558c5:/usr/local/tomcat/webapps &quot;D:/Docker cp&quot;
+
+# 查看容器内部细节
+docker inspect 容器名称|容器ID
+
+# 将容器打包成一个新的镜像
+ docker commit -m &quot;描述信息&quot; -a &quot;作者信息&quot; 镜像名称:版本
+ 
+# 解决镜像tag为none
+docker tag [IMAGE ID] [REPOSITORY名]:[TAG标识]
+ 
+# 将镜像备份出来
+ docker save 镜像名称:TAG -o 文件名（建议使用tar）
+ 
+# 加载镜像进来本地仓库
+ docker load -i likasi-tomcat-v1.tar
+</code></pre>
+<h2 id="docker镜像分层原理">docker镜像分层原理</h2>
+<blockquote>
+<p>镜像是一种轻量级的，可执行的独立软化包，用来打包软件运行环境和基于运行环境开发的软件，它包含了运行某个软件所需的所有内容，包括代码、运行是的依赖库、环境变量、配置文件等。</p>
+</blockquote>
+<h3 id="镜像为什么这么大">镜像为什么这么大？</h3>
+<p>原因：一个软件镜像不仅仅时原来软件包，包含软件所需的操作系统依赖，软件自身依赖以及软件自身包。</p>
+<h3 id="为什么docker镜像采用分层">为什么docker镜像采用分层？</h3>
+<p>原因：docker在设计的使用每一个镜像都是由n个镜像共同组成，一层一层组成的。</p>
+<p>原理：<code>UnionFS</code> （联合文件系统）：一次同时加载多个文件系统，从外面来看只能看到一个文件系统，联合加载会把各层文件系统叠加起来，叠加得到最终的文件系统。</p>
+<h3 id="为什么采用unionfs">为什么采用UnionFS?</h3>
+<p>好处：资源共享，<strong>采用分层机制实现基础层共享</strong>，从而减小docker仓库整体体积，<strong>因为有些基础层可以共享</strong></p>
+<h2 id="docker中容器之间网络配置">docker中容器之间网络配置</h2>
+<blockquote>
+<p>注意：在使用docker网桥（bridge）实现容器与容器通信时，一般都是一个应用一个网桥</p>
+</blockquote>
+<pre><code class="language-markdown"># 查看网桥信息
+docker network ls
+
+# 创建自定义网桥
+docker create -d bridge 网桥名称  `默认使用的是bridge`
+docker create likasi
+
+# 启动容器时指定网桥
+加上参数 --network 网桥名称  `如果启动容器时没有这个网桥，docker不会自动创建这个网桥`
+
+# 注意
+`启动容器时指定网桥参数时，docker会将IP与容器名称之间进行映射，注意的话，访问容器名称也是和访问IP一样的效果，避免了IP随机分配被修改的问题`
+
+# 删除网桥
+docker network rm 网桥名称
+
+# 查看网桥细节信息
+docker inspect 网桥名称
+</code></pre>
+<h2 id="数据卷">数据卷</h2>
+<p>作用：用来实现容器与宿主机之间的数据共享</p>
+<p>特点：</p>
+<ol>
+<li>数据卷和容器之间共享</li>
+<li>对数据卷的修改会立即影响到对应容器目录</li>
+<li>对数据卷的修改不会影响镜像</li>
+<li>数据卷默认会一直存在，及时容器被删除</li>
+</ol>
+<p>操作：</p>
+<pre><code class="language-markdown"># 数据卷
+docker run -d -p 8787:8080 --name Tomcat_01 -v 宿主机目录（必须是绝对路径）:容器内目录 tomcat:latest 
+
+1.自定义数据卷目录
+docker run -d -p 8787:8080 --name Tomcat_01 -v &quot;D:Docker cp&quot;:/usr/local/tomcat/webapps tomcat:latest 
+
+2.自动创建数据卷目录
+docker run -d -p 8787:8080 --name Tomcat_01 -v liaksi:/usr/local/tomcat/webapps tomcat:latest 
+
+3.注意
+1）likasi表示一个数据卷的名字，`docker启动时在没有这个数据卷时会自动创建同时映射到宿主机中某个目录`
+2）同时在启动容器时会将容器中所映射的目录所有内容复制到宿主机likasi目录
+
+4.使用场景
+ `如果是不想对容器中的资源进行写，但是想把容器中的数据保存到宿主机中，比如mysql、redis、es`
+ `如果要对容器中的资源进行写操作，建议自定义数据卷目录`
+ 
+# 启动时加载数据卷 /root/likasi/webapps
+docker run -d -p 8789:8080 --name Tomcat_03 -v /root/likasi/webapps:/usr/local/tomcat/webapps likasi/tomcat:v1
+
+# 不让容器对宿主机数据卷进行写操作 :ro(read only)
+docker run -d -p 8789:8080 --name Tomcat_03 -v /root/likasi/webapps:/usr/local/tomcat/webapps:ro likasi/tomcat:v1
+
+# 查看数据卷
+docker volume ls
+
+# 查看某个数据卷的信息
+docker volume inspect 卷名
+
+# 删除没有使用的数据卷
+docker volume prune
+
+# 删除指定数据卷
+docker volume rm 卷名 
+</code></pre>
+<h2 id="docker安装常见服务">docker安装常见服务</h2>
+<blockquote>
+<p>去Docker Hub搜索相关镜像，选择自己想要的版本，拉取镜像，查看使用方法</p>
+</blockquote>
+<h3 id="docker安装mysql">docker安装MySQL</h3>
+<pre><code class="language-markdown"># 拉取mysql镜像docker pull mysql:5.7.32# 启动mysql服务  -e 表示指定环境变量 docker run -d -p 3306:3306 --name mysql_01 -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7.32# 使用数据卷将数据持久化到宿主机# 查看docker hub关于mysql的使用得知，mysql容器中存储数据存放目录为 /var/lib/mysqldocker run -d -p 3306:3306 --name mysql_01 -e MYSQL_ROOT_PASSWORD=123456 -v mysql_data:/var/lib/mysql  mysql:5.7.32# 以修改后的配置文件启动# 查看docker hub关于mysql的使用得知，mysql容器中配置文件存放目录为 /etc/mysqldocker run -d -p 3306:3306 --name mysql_01 -e MYSQL_ROOT_PASSWORD=123456 -v mysql_data:/var/lib/mysql  -v mysql_config:/etc/mysql mysql:5.7.32
+</code></pre>
+<h3 id="docker安装tomcat">docker安装Tomcat</h3>
+<pre><code class="language-markdown"># 拉取tomcat镜像
+docker pull tomcat:8.0-jre8
+
+# 启动tomcat服务
+docker run -d -p 8787:8080 --name tomcat_01 tomcat:8.0-jre8
+
+# 应用通过数据卷部署
+# 部署web应用容器中的目录 /usr/local/tomcat/webapps
+# 配置文件容器中的目录 /usr/local/tomcat/conf
+docker run -d -p 8787:8080 --name tomcat_01 -v myapps:/usr/local/tomcat/webapps tomcat:8.0-jre8  `只需将要部署的web应用放到myapps这个目录即可`
+
+docker run -d -p 8787:8080 --name tomcat_01 -v myapps:/usr/local/tomcat/webapps -v myconfigs:/usr/local/tomcat/conf tomcat:8.0-jre8  `用修改的配置文件启动`
+
+# 注意:有的配置修改之后是需要重启容器才能生效的，比如tomcat端口，生效实在容器内部的，但是你已经启动了容器了，所以重新用修改的配置文件启动一个容器
+</code></pre>
+<h3 id="docker安装redis">docker安装Redis</h3>
+<pre><code class="language-markdown"># 拉取redis镜像
+docker pull redis:5.0.10
+
+# 启动redis服务
+docker run -d -p 6379:6379 --name redis_01 redis:5.0.10
+
+# 开启AOF持久化
+# 容器中redis持久化生产的aof文件存放目录 /data
+docker run -d -p 6379:6379 --name redis_01 -v redis_data:/data redis:5.0.10 redis-server --appendonly yes 
+
+# 以修改的redis配置文件启动
+# 注意:redis镜像中没有redis.conf，如果要以自己的redis.conf启动，需要去redis官网下载对应镜像的redis，当中有redis.conf，上传这个redis.conf到宿主机(假设放到/root/redis_conf目录下)，用数据卷的方式加载(容器中目录/usr/local/etc/redis)，并指定用配置文件启动。或者自己写一个redis.conf配置文件，只需要遵循它的语法，写自己要覆盖的配置。
+docker run -d -p 6379:6379 --name redis_01 -v /root/redis_conf:/usr/local/etc/redis  redis:5.0.10 redis-server /usr/local/etc/redis/redis.conf
+</code></pre>
+<pre><code class="language-markdown"># 删除所有hello-world的容器
+docker rm  $(docker ps -a | grep &quot;hello-world&quot; |awk '{print $1}')
+
+awk '{print $1}' 就是将某一行（一条记录）中以空格为分割符的第一个字段打印出来
+</code></pre>
+<h3 id="总结">总结:</h3>
+<p>用docker安装服务，如果服务自身有数据需要持久化的话需要把数据挂载到数据卷上，如果需要修改配置文件启动的话，也需要把配置文件挂载到数据卷方便修改启动</p>
+<h2 id="dockerfile">Dockerfile</h2>
+<blockquote>
+<p>Dockerfile 是一个用来构建镜像的文本文件，文本内容包含了一条条构建镜像所需的指令和说明</p>
+</blockquote>
+<p>定义：镜像构建文件，用来帮助我们自己构建一个自定义镜像。</p>
+<p>问题：docker hub中官方已经提供了很多镜像了，为什么还需要自定义镜像？</p>
+<p>作用：用户可以将自己的应用打包成一个镜像，让我们的应用进行容器运行</p>
+<h3 id="dockerfile构建镜像的原理">Dockerfile构建镜像的原理</h3>
+<p>将<code>Dockerfile</code>所在的<code>context</code>目录中的所有文件都把包成镜像，一层一层的打包，构建出最终镜像。</p>
+<h3 id="dockerfile命令">Dockerfile命令</h3>
+<blockquote>
+<p>官网：https://docs.docker.com/engine/reference/builder/</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>保留字</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FROM</code></td>
+<td>当前镜像是基于的哪个镜像  <code>第一个指令必须是FROM</code></td>
+</tr>
+<tr>
+<td>MAINTAINER</td>
+<td>镜像维护者的姓名和邮箱地址</td>
+</tr>
+<tr>
+<td><code>RUN</code></td>
+<td>构建镜像时需要运行的指令</td>
+</tr>
+<tr>
+<td><code>EXPOSE</code></td>
+<td>当前容器对外暴露出的端口</td>
+</tr>
+<tr>
+<td><code>WORDIR</code></td>
+<td>指定在容器创建后，终端默认进来的工作目录，一个落脚点</td>
+</tr>
+<tr>
+<td><code>ENV</code></td>
+<td>用来在镜像构建过程中设置环境变量</td>
+</tr>
+<tr>
+<td><code>ADD</code></td>
+<td>讲宿主机目录下的文件拷贝进镜像 ADD命令会自动处理URL和解压tar包</td>
+</tr>
+<tr>
+<td><code>COPY</code></td>
+<td>类似于ADD，拷贝文件和目录到镜像中，将从<code>context</code>目录中&lt;原路径&gt;的文件复制到新的一层的镜像内的&lt;目标路径&gt;位置</td>
+</tr>
+<tr>
+<td><code>VOLUME</code></td>
+<td>容器数据卷，用于数据保存和持久化工作</td>
+</tr>
+<tr>
+<td><code>CMD</code></td>
+<td>指定一个容器启动时要运行的命令，Dockerfile中可以有多个CMD指令，但是只有最后一个生效，CMD会被docker run之后的命令替换</td>
+</tr>
+<tr>
+<td><code>ENTRYPOINT</code></td>
+<td>指定一个容器启动时要运行的命令，和CMD一样都是指定容器启动程序和参数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="from-命令">FROM 命令</h4>
+<blockquote>
+<p>Dockerfile第一条命令必须是FROM</p>
+</blockquote>
+<pre><code class="language-dockerfile">FROM &lt;image&gt; 
+FROM &lt;image&gt;[:tag] 不写版本为latest
+FROM &lt;image&gt;[@digest] 
+</code></pre>
+<h4 id="maintainer-命令">MAINTAINER 命令</h4>
+<blockquote>
+<p>镜像维护者的姓名和邮箱地址（已废弃，官方不推荐了）</p>
+</blockquote>
+<pre><code class="language-dockerfile">MAINTAINER &lt;name&gt;
+</code></pre>
+<h4 id="run-命令">RUN 命令</h4>
+<blockquote>
+<p>RUN指令将在当前镜像之上的新层中执行任何命令并提交结果用于Dockerfile中的下一步</p>
+</blockquote>
+<pre><code class="language-markdown">RUN &lt;command&gt;   例子: RUN yum -y install vim
+RUN echo hello
+RUN [&quot;yum&quot;,&quot;-y&quot;,&quot;install&quot;,&quot;vim&quot;]
+RUN [&quot;/bin/bash&quot;,&quot;-c&quot;,&quot;echo hello&quot;]
+</code></pre>
+<h4 id="expose-命令">EXPOSE 命令</h4>
+<blockquote>
+<p>用来指定构建的镜像在运行容器时对外暴露的端口</p>
+</blockquote>
+<pre><code class="language-markdown">EXPOSE 80/tcp  如果没有指定默认暴露tcp
+EXPOSE 80/udp
+</code></pre>
+<h4 id="workdir-命令">WORKDIR  命令</h4>
+<blockquote>
+<p>用来为Dockerfile中的任何RUN 、ENTRTPOINT、COPY、ADD指令设置工作目录，如果WORDIR不存在，即使它后续的任何Dockerfile中没有使用它，它也将被创建</p>
+</blockquote>
+<pre><code class="language-markdown">WORKDIR /likasi/bin
+WORKDIR we
+
+注意：WORKDIR指令可以在Dockerfile中多次使用，`如果提供了相对路径，则该路径将于先前的WORKDIR指令的路径相对`,例子：/likasi/bin/we
+</code></pre>
+<h4 id="add-命令">ADD 命令</h4>
+<blockquote>
+<p>用来从context目录下复制新文件、目录、远程文件URL、解压压缩包，并将它们添加到位于指定路径的镜像文件系统中</p>
+</blockquote>
+<pre><code class="language-markdown">ADD home* /likasi/bin     通配符添加多个文件
+ADD home?.txt /likasi/bin 通配符添加文件
+ADD url 
+</code></pre>
+<h4 id="copy-命令">COPY 命令</h4>
+<blockquote>
+<p>用来将context目录下指定文件复制到镜像的指定目录中</p>
+</blockquote>
+<pre><code class="language-markdown">COPY src desc
+COPY [&quot;src&quot;,...,&quot;desc&quot;]
+</code></pre>
+<h4 id="volume-命令">VOLUME 命令</h4>
+<blockquote>
+<p>用来指定容器运行时可以挂载到宿主机的目录</p>
+</blockquote>
+<pre><code class="language-markdown">VOLUME /likasi/bin
+
+注意：docker run命令的-v标识创建的挂载点只能对创建的容器有效。通过dockerfile的 VOLUME 指令可以在镜像中创建挂载点，这样只要通过该镜像创建的容器都有了挂载点
+</code></pre>
+<h4 id="env-命令">ENV 命令</h4>
+<blockquote>
+<p>用来为构建镜像设置环境变量，这个值将出现在构建阶段所有后续指令的环境中</p>
+</blockquote>
+<pre><code class="language-markdown">ENV &lt;key&gt; &lt;value&gt;
+ENV &lt;key&gt;=&lt;value&gt;
+
+例子：
+ENV BASE_DIR /likasi/bin  后续凡是用到/likasi/bin这个的地方，用$BASE_DIR引用即可
+ENV MYSQL_ROOT_PASSWORD 
+</code></pre>
+<h4 id="cmd-命令">CMD 命令</h4>
+<blockquote>
+<p>用来为启动的容器后指定执行的命令，在Dockerfile中只能有一条CMD命令，Dockerfile中可以有多个CMD指令，但是只有最后一个生效</p>
+</blockquote>
+<pre><code class="language-markdown">CMD [&quot;exec&quot;,&quot;param1&quot;,&quot;param2&quot;]
+CMD [&quot;param1&quot;,&quot;param2&quot;]
+CMD command param1 param2
+</code></pre>
+<h4 id="entrypoint-命令">ENTRYPOINT 命令</h4>
+<blockquote>
+<p>用来指定容器运行后执行的命令</p>
+</blockquote>
+<pre><code class="language-markdown">ENTRYPOINT [&quot;exec&quot;,&quot;param1&quot;,&quot;param2&quot;]
+ENTRYPOINT [&quot;param1&quot;,&quot;param2&quot;
+ENTRYPOINT command param1 param2
+
+例子：
+ENTRYPOINT ls /likasi/bin
+</code></pre>
+<h4 id="注意">注意</h4>
+<pre><code class="language-markdown">ENTRYPOINT 和 CMD命令往往搭配使用，ENTRYPOINT后面的指令不可覆盖，CMD后面的指令可以被覆盖,搭配的时候使用json格式
+
+例子：
+ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;]
+CMD [&quot;myapps.jar&quot;]
+</code></pre>
+<h4 id="例子">例子</h4>
+<pre><code class="language-markdown">#Dockerfile
+FROM centos:7
+RUN yum -y install vim
+EXPOSE 80
+WORKDIR /likasi
+WORKDIR data
+VOLUME /likasi/bin
+ADD test.txt  /likasi/data
+COPY test1.txt /likasi/data
+</code></pre>
+<pre><code class="language-markdown"># -t 表示tag
+[root@localhost dockerfile]# docker build -t mycentos:7 .
+</code></pre>
+<h3 id="dockfile-构建springboot应用">Dockfile 构建SpringBoot应用</h3>
+<blockquote>
+<p>首先IDEA中安装docker插件，高版本自动安装，打开depolyment，添加远程主机配置(SFTP)，即可在IDEA中编写Dockfile和拖动上传打包的jar</p>
+</blockquote>
+<pre><code class="language-markdown">FROM openjdk:8
+WORKDIR /likasi/bin
+ADD SpringBoot-01-1.0-SNAPSHOT.jar demo1.jar
+EXPOSE 8787
+ENTRYPOINT [&quot;java&quot;,&quot;-jar&quot;]
+CMD [&quot;demo1.jar&quot;]
+</code></pre>
+<pre><code class="language-markdown">[root@localhost dockerfile]# docker bulid -t springboot:v1 .
+</code></pre>
+<p>注意：注意WORKDIR，<strong>用来为Dockerfile中的任何RUN 、ENTRTPOINT、COPY、ADD指令设置工作目录</strong></p>
+<h2 id="docker-compose">Docker-compose</h2>
+<blockquote>
+<p>对docker容器集群的编排，通过docker-compose.yml文件，定义我们的服务及其需要的依赖，轻松地运行在测试、生产等环境</p>
+</blockquote>
+<h3 id="安装-2">安装</h3>
+<pre><code class="language-markdown">下载：https://github.com/docker/compose/releases
+
+安装：上传到/usr/local/bin 并改名为docker-compose   `[root@localhost bin]# mv docker-compose-Linux-x86_64 docker-compos`
+
+添加权限：chmod +x /usr/local/bin/docker-compose
+
+查看是否安装成功：docker-compose -v 
+</code></pre>
+<h3 id="使用">使用</h3>
+<blockquote>
+<p>docker-compose的模板命令和docker 的run命令相关参数类似</p>
+</blockquote>
+<p>docker-compose中的两个重要概念：</p>
+<ul>
+<li>服务（services）: 一个应用的容器，实际上可以包括若干运行相同镜像的容器实例</li>
+<li>项目（project）：由一组关联的应用容器组成的一个完整业务单元</li>
+</ul>
+<pre><code class="language-yaml">#指定版本号
+version: &quot;3&quot;
+#指定服务
+services: 
+#服务名
+  tomcat1:
+    image: likasi/tomcat:v1
+    ports:
+      - 8787:8080
+  tomcat2:
+    image: likasi/tomcat:v1
+    ports:
+      - 8788:8080      
+</code></pre>
+<h3 id="命令模板">命令模板</h3>
+<h4 id="例子-2">例子</h4>
+<pre><code class="language-yaml">version: &quot;3&quot; #指定版本号
+services: #指定版本号
+  tomcat01: #指定版本号
+    container_name: tomcat01 #容器名称
+    image: likasi/tomcat:v1 #容器所使用的镜像
+    ports: #端口映射
+      - &quot;8789:8080&quot;
+    volumes: #数据卷
+#    - /root/likasi/webapps:/usr/local/tomcat/webapps #自定义数据卷目录
+    - tomcat_webapps:/usr/local/tomcat/webapps #自动创建数据卷目录
+    networks: #网桥
+     - hello #指定当前服务使用哪个网桥
+     
+   springboot:
+    build: #启动服务时先将build命令中指定的Dockerfile打包成镜像，再运行该镜像
+      context: ./springboot #指定context目录 绝对路径，相对路径都行
+      dockerfile: Dockerfile #指定Dockerfile文件名称
+    container_name: springboot01
+    ports:
+    - &quot;8787:8787&quot;
+    networks:
+      - hello 
+
+  tomcat02:
+    container_name: tomcat02
+    image: likasi/tomcat:v1
+    ports:
+      - &quot;8788:8080&quot;
+    volumes:
+      #    - /root/likasi/webapps:/usr/local/tomcat/webapps #自定义数据卷目录
+      - tomcat_webapps1:/usr/local/tomcat/webapps #自动创建数据卷目录
+    networks:
+      - hello
+
+  mysql:
+    container_name: mysql01
+    image: mysql:5.7.32
+    ports:
+      - &quot;3306:3306&quot;
+    volumes:
+      - mysqldata:/var/lib/mysql
+      - mysqlconf:/etc/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    networks:
+      - hello
+
+  redis:
+    container_name: redis01
+    image: redis:5.0.10
+    ports:
+      - &quot;6379:6379&quot;
+    volumes:
+      - redisdata:/data
+    command: &quot;redis-server --appendonly yes&quot;
+    networks:
+      - hello
+
+#声明上面服务用到的自动创建的数据卷目录
+volumes:
+  redisdata:
+  mysqldata:
+  mysqlconf:
+  tomcat_webapps1:
+  tomcat_webapps: #生产的卷名默认会在前面加上项目名
+#    external: #使用自定义卷名
+#      true #true表示使用外部自定义卷名 注意：宿主机一定要有这个卷名 否则报错 docker volume create 卷名
+
+#声明上述服务用到的网桥，默认是bridge类型
+networks:
+  hello:
+#    external: #使用自定义网桥名
+#      true #true表示使用外部自定义网桥名 注意：宿主机一定要有这个网桥名 否则报错 docker network create 卷名
+</code></pre>
+<h4 id="healthcheck-命令">healthcheck 命令</h4>
+<pre><code class="language-yaml"># 通过命令检查容器是否健康运行
+heathcheck:
+  test: [&quot;CMD&quot;,&quot;curl&quot;,&quot;-f&quot;,&quot;http://localhost&quot;]
+  interval: 1m30s
+  timeout: 10s
+  retries: 3
+</code></pre>
+<h4 id="sysctls-命令">sysctls 命令</h4>
+<pre><code class="language-yaml"># 修改容器中系统内部参数
+sysctls:
+  -net.core.somaxconn=1024
+</code></pre>
+<h4 id="ulimits-命令">ulimits 命令</h4>
+<pre><code class="language-yaml"># 指定容器的ulimits限制值
+ulimits：
+  nproc: 65535 #修改系统内最大进程数为65535
+</code></pre>
+<h4 id="bulid-命令">bulid 命令</h4>
+<pre><code class="language-yaml"># 将指定Dockerfile打包成对应镜像，然后再运行该容器
+  springboot:
+    build: #启动服务时先将build命令中指定的Dockerfile打包成镜像，再运行该镜像
+      context: ./springboot #指定context目录 绝对路径，相对路径都行
+      dockerfile: Dockerfile #指定Dockerfile文件名称
+    container_name: springboot01
+    ports:
+    - &quot;8787:8787&quot;
+    networks:
+      - hello
+</code></pre>
+<h3 id="docker-compose命令">docker-compose命令</h3>
+<h4 id="常用指令">常用指令</h4>
+<pre><code class="language-markdown"># up -d表示后台启动 指定名称会启动指定服务 没指定启动全部服务
+docker-compose up [服务ID]
+
+# down 指定名称会关闭指定服务，没指定关闭全部服务，会销毁自动创建的网桥
+docker-compose down [服务ID]
+
+# ps 展示当前 docker-compose运行的所有容器
+docker-compose ps
+
+# restart 指定名称会重启指定服务 没指定重启全部服务
+docker-compose restart [服务ID]
+
+# rm -f表示强制 -v表示删除数据卷
+docker-compose rm [服务ID]
+
+# start
+docker-compose start [服务ID]
+
+# stop
+docker-compose stop [服务ID]
+
+# top 查看docker-compose容器内运行的进程
+docker-compose top [服务ID]
+
+# pause   暂停 
+# unpause 恢复
+docker-compose pause [服务ID]
+
+# logs 查看服务日志 -f表示实时追踪
+docker-compose [服务ID]
+</code></pre>
+<p>总结：<code>docker-compose</code>是站在服务层面的。</p>
+<h2 id="docker-portainer-可视化工具">docker portainer 可视化工具</h2>
+<h4 id="下载">下载</h4>
+<pre><code class="language-markdown">docker pull portainer/portainer
+</code></pre>
+<h4 id="启动">启动</h4>
+<blockquote>
+<p>8000端口是和docker引擎通信的，9000端口是和宿主机通信的，与docker引擎交互 /var/run/docker.sock     portainer容器数据 /data</p>
+</blockquote>
+<pre><code class="language-markdown"># docker run 方式启动
+docker run -d -p 8000:8000 -p 9000:9000 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
+
+# docker-compose up 方式启动
+portainer:
+  container_name: portainer
+  image: portainer/portainer
+  ports:
+    - &quot;8000:8000&quot;
+    - &quot;9000:9000&quot;
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - portainer_data:/data
+  networks:
+    - hello
+</code></pre>
+<h4 id="访问">访问</h4>
+<pre><code class="language-markdown"># 访问
+http://172.19.40.236:9000
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/likasi/img/raw/master/img/docker.png" alt="" loading="lazy"></figure>
+<h2 id="问题">问题</h2>
+<pre><code class="language-markdown"># 出现问题（空间不足）
+dockerError processing tar file(exit status 1): no space left on device
+</code></pre>
+<pre><code class="language-markdown"># 解决方案
+docker info 查看 docker root dir是否为默认的docker镜像存放地址 /var/lib/docker，将其修改为到其它地方，比如 /root/docker下
+1.关闭docker服务 systemctl stop docker 
+2.查看是否关闭成功 systemctl status docker
+3.新建目录 mkdir /root/docker
+4.新建docker配置文件 sudo touch /etc/docker/daemon.json
+5.vim写入文件 vim /etc/docker/daemon.json
+  {&quot;graph&quot;: &quot;/root/docker&quot;}
+6.重新加载 
+  systemctl docker daemon-reload
+  systemctl start docker 
+7.查看是否更换成功
+  docker info 查看 docker root dir是否为/root/docker
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://https://wxf777.github.io/99J2mzOb9/" class="tag">
+                    docker
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://https://wxf777.github.io/hello-gridea/">
+                  <h3 class="post-title">
+                    Hello Gridea
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>
